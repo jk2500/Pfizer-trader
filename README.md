@@ -1,105 +1,65 @@
-# Pfizer-Trader: LSTM/xLSTM Reinforcement Learning for Stock Trading
+# Pfizer-Trader RL Agent
 
 ## Overview
-This repository implements a reinforcement learning (RL) agent for trading Pfizer (PFE) stock using LSTM and xLSTM-based policies. The agent is trained and evaluated on historical PFE data, with a focus on realistic trading environments and transaction costs.
-
-- **RL Training**: `rl.py` (standard LSTM) and optionally `rl_xlstm.py` (xLSTM variant, if present)
-- **Evaluation**: `evaluate_model.py` (supports both LSTM and xLSTM models)
-- **CLI Tool**: `main_cli.py` for interactive training and evaluation
-- **Model**: Trained model weights (e.g., `ppo_lstm_trading_pfe_final.zip`)
-- **Data**: `PFE.csv` (Pfizer historical stock data)
+This repository implements a reinforcement learning (RL) agent for trading Pfizer (PFE) stock using an LSTM-based policy. The code is designed for training and evaluating the agent on historical data, with a focus on realistic trading environments and transaction costs.
 
 ---
 
-## Project Structure
+## Repository Contents
 
-- `rl.py` — Main script for training an RL agent with LSTM policy using SB3-Contrib's RecurrentPPO.
-- `evaluate_model.py` — Script to evaluate a trained model (LSTM or xLSTM) on the test set.
-- `main_cli.py` — Command-line interface for training and evaluation workflows.
-- `ppo_lstm_trading_pfe_final.zip` — Example of a trained model file.
-- `PFE.csv` — Historical stock data for Pfizer (used for training/testing).
-- `requirements.txt` — Python dependencies.
-- `best_model_lstm_pfe_1M/`, `logs_lstm_pfe_1M/`, etc. — Model checkpoints and logs.
+- `rl.py` — Main script for training the RL agent using SB3-Contrib's RecurrentPPO with an LSTM policy.
+- `evaluate_model.py` — Script to evaluate a trained model on a test set.
+- `environment.yml` — Conda environment file listing all dependencies required to run the code.
+- `best_model_lstm_pfe/` — Directory containing the best trained model (`best_model.zip`).
 
 ---
 
-## Data
-- **File**: `PFE.csv`
-- **Columns**: `Date, Open, High, Low, Close, Adj Close, Volume`
-- **Usage**: The RL environment uses rolling features (MA10, MA50, RSI) computed from this data.
+## Setup
+
+### 1. Create the Conda Environment
+Install all dependencies using the provided environment file:
+```bash
+conda env create -f environment.yml
+conda activate pfizer-analysis-env
+```
+
+### 2. (Alternative) Install with pip
+If you prefer pip, install the main dependencies manually:
+```bash
+pip install numpy pandas matplotlib seaborn statsmodels scikit-learn torch torchvision gymnasium stable-baselines3 sb3-contrib tensorboard opencv-python
+```
 
 ---
 
 ## Training
 
-### Standard LSTM Policy
-To train an LSTM-based RL agent:
+To train the RL agent on your data, run:
 ```bash
 python rl.py
 ```
-- The script will train a RecurrentPPO agent with an LSTM policy on the training portion of the data.
-- Model checkpoints and logs are saved in `best_model_lstm_pfe_1M/` and `logs_lstm_pfe_1M/`.
-- Final model is saved as `ppo_lstm_trading_pfe_final_1M.zip`.
-
-### xLSTM Policy (if available)
-If you have `rl_xlstm.py`, you can train an xLSTM variant:
-```bash
-python rl_xlstm.py
-```
+- The script will load the data (make sure the required CSV is present and referenced in the script), train the agent, and save the best model to `best_model_lstm_pfe/best_model.zip`.
 
 ---
 
 ## Evaluation
 
-To evaluate a trained model (LSTM or xLSTM):
+To evaluate a trained model:
 ```bash
-python evaluate_model.py --model_path <path_to_model.zip> --policy_type <lstm|xlstm> --env_window_size 100 --env_cost 0.0003 --data_path PFE.csv --split_date 2010-01-01
+python evaluate_model.py --model_path best_model_lstm_pfe/best_model.zip --policy_type lstm --env_window_size 100 --env_cost 0.0003 --data_path <your_data.csv> --split_date 2010-01-01
 ```
-- `--model_path`: Path to the trained model zip file
-- `--policy_type`: `lstm` or `xlstm`
-- `--env_window_size`: Observation window size (default: 100)
-- `--env_cost`: Transaction cost per trade (default: 0.0003)
-- `--data_path`: Path to the data CSV (default: PFE.csv)
-- `--split_date`: Train/test split date (default: 2010-01-01)
-
----
-
-## Command-Line Interface (CLI)
-
-You can use the interactive CLI for training and evaluation:
-```bash
-python main_cli.py
-```
-- Choose to train a new model or evaluate an existing one.
-- The CLI will guide you through the required parameters and workflow.
-
----
-
-## Requirements
-Install dependencies with:
-```bash
-pip install -r requirements.txt
-```
-**Note:** You will also need:
-- `stable-baselines3`
-- `sb3-contrib`
-- `gymnasium`
-
-Install with:
-```bash
-pip install stable-baselines3 sb3-contrib gymnasium
-```
+- Adjust `--data_path` to point to your data file (must match the format expected by the scripts).
+- The script will print evaluation results and plot performance.
 
 ---
 
 ## Model Files
-- Trained models are saved as `.zip` files (e.g., `ppo_lstm_trading_pfe_final.zip`).
-- Best models during training are saved in `best_model_lstm_pfe_1M/`.
+- The best trained model is saved as `best_model_lstm_pfe/best_model.zip`.
 
 ---
 
-## Citation
-If you use this codebase, please cite or reference this repository.
+## Notes
+- Make sure your data file (CSV) is present and matches the expected format in `rl.py` and `evaluate_model.py`.
+- The scripts expect columns like `Date, Open, High, Low, Close, Adj Close, Volume` and will compute additional features (MA10, MA50, RSI).
 
 ---
 
