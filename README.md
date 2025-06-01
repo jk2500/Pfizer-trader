@@ -11,6 +11,15 @@ This repository implements a reinforcement learning (RL) agent for trading Pfize
 - `evaluate_model.py` — Script to evaluate a trained model on a test set.
 - `environment.yml` — Conda environment file listing all dependencies required to run the code.
 - `best_model_lstm_pfe/` — Directory containing the best trained model (`best_model.zip`).
+- `PFE.csv` — Historical stock data for Pfizer, used for training and evaluation.
+
+---
+
+## Data: `PFE.csv`
+- **File**: `PFE.csv`
+- **Columns**: `Date, Open, High, Low, Close, Adj Close, Volume`
+- **Usage**: The RL environment uses this data and computes additional features (MA10, MA50, RSI) automatically.
+- **Format**: CSV with a header row and daily stock data for Pfizer.
 
 ---
 
@@ -37,7 +46,7 @@ To train the RL agent on your data, run:
 ```bash
 python rl.py
 ```
-- The script will load the data (make sure the required CSV is present and referenced in the script), train the agent, and save the best model to `best_model_lstm_pfe/best_model.zip`.
+- The script will load `PFE.csv`, train the agent, and save the best model to `best_model_lstm_pfe/best_model.zip`.
 
 ---
 
@@ -45,10 +54,9 @@ python rl.py
 
 To evaluate a trained model:
 ```bash
-python evaluate_model.py --model_path best_model_lstm_pfe/best_model.zip --policy_type lstm --env_window_size 100 --env_cost 0.0003 --data_path <your_data.csv> --split_date 2010-01-01
+python evaluate_model.py --model_path best_model_lstm_pfe/best_model.zip --policy_type lstm --env_window_size 100 --env_cost 0.0003 --data_path PFE.csv --split_date 2010-01-01
 ```
-- Adjust `--data_path` to point to your data file (must match the format expected by the scripts).
-- The script will print evaluation results and plot performance.
+- The script will use `PFE.csv` for evaluation, print results, and plot performance.
 
 ---
 
@@ -58,7 +66,7 @@ python evaluate_model.py --model_path best_model_lstm_pfe/best_model.zip --polic
 ---
 
 ## Notes
-- Make sure your data file (CSV) is present and matches the expected format in `rl.py` and `evaluate_model.py`.
+- Make sure `PFE.csv` is present and matches the expected format above.
 - The scripts expect columns like `Date, Open, High, Low, Close, Adj Close, Volume` and will compute additional features (MA10, MA50, RSI).
 
 ---
