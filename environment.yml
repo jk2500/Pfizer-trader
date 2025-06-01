@@ -1,0 +1,25 @@
+name: pfizer-analysis-env
+channels:
+  - conda-forge
+  - pytorch
+  - defaults
+dependencies:
+  - python=3.9
+  - numpy
+  - pandas
+  - matplotlib
+  - seaborn
+  - statsmodels
+  - scikit-learn
+  - pytorch
+  - torchvision
+  - torchaudio
+  - cpuonly  # Remove this line if you want GPU support
+  - pip
+  - pip:
+    - gymnasium
+    - stable-baselines3
+    - sb3-contrib
+    - tensorboard
+    - opencv-python  # Often needed for some gym environments
+  # TensorFlow will be installed via pip 
